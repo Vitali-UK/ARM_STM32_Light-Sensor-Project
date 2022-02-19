@@ -1,0 +1,31 @@
+#include "main.h"
+#include "stdio.h"
+#include "../ECUAL/LCD16x2/LCD16x2.h"
+#include "../ECUAL/LM35/LM35.h"
+ 
+void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
+ 
+int main(void)
+{
+    float Temp = 0;
+    uint8_t MSG[16] = {0};
+ 
+    HAL_Init();
+    SystemClock_Config();
+    MX_GPIO_Init();
+    LCD_Init();
+    LCD_Clear();
+    LCD_Set_Cursor(1, 1);
+    LCD_Write_String("Temperature Is:");
+    LM35_Init(0);
+ 
+    while (1)
+    {
+        Temp = LM35_Read(0);
+        sprintf(MSG, "%.3f C", Temp);
+        LCD_Set_Cursor(2, 1);
+        LCD_Write_String(MSG);
+        HAL_Delay(100);
+    }
+}
